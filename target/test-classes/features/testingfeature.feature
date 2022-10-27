@@ -5,13 +5,13 @@ Scenario: Positive case login page
   And click login button
   When check valid
   Then click burger icon
-  #   And click menu 1
+    And click every li element
   #   And click menu 2
   #   And click menu 3
   #   And click menu 4
   #   And click menu 5
   #   And click menu 6
-  # Then click logout
+  Then click logout
 
 Scenario: Negative case login page
   When enter "username" and "password"

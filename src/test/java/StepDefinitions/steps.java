@@ -1,11 +1,14 @@
 package StepDefinitions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -45,30 +48,49 @@ public class steps {
     loginStep.clickBtnLogin();
   }
 
+  List<WebElement> liElm;
+
   @Then("check valid")
-  public void checkValid() throws Throwable {
-    String txt;
+  public void checkValid() {
+    String txt = "error";
     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     wait.until(ExpectedConditions.or(ExpectedConditions.visibilityOfElementLocated(By.className("toast-body")),
         ExpectedConditions.visibilityOfElementLocated(By.className(("title")))));
-    txt = driver.findElement(By.className("toast-body")).getText();
-    System.out.println("hasil: " + txt);
-
-    txt = driver.findElement(By.className("title")).getText();
-    assertEquals("Dashboard", txt);
+    try {
+      txt = driver.findElement(By.className("toast-body")).getText();
+      assertTrue(txt.contains("not found"));
+    } catch (Exception e) {
+      // TODO: handle exception
+      txt = driver.findElement(By.className("title")).getText();
+      assertTrue(txt.contains("board"));
+    }
   }
 
   @Then("click burger icon")
   public void clickBurgerIcon() {
     reviewPageStep.clickMenuIcon();
+    liElm = driver.findElements(By.tagName("li"));
+    System.out.println(liElm.size());
   }
-  // @And("click menu 1")
-  // public void clickMenu1() {
 
+  @And("click every li element")
+  public void clickMenu1() {
+    for (WebElement li : liElm) {
+      li.click();
+      reviewPageStep.clickMenuIcon();
+      System.out.println("success");
+      WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1));
+      wait.until(ExpectedConditions.elementToBeClickable(By.tagName("li")));
+    }
+  }
+
+  @Then("click logout")
+  public void clickLogoutBtn() {
+
+  }
+
+  // @After
+  // public void closeBrowser() {
+  // driver.quit();
   // }
-
-  @After
-  public void closeBrowser() {
-    driver.quit();
-  }
 }
