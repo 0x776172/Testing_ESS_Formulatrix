@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import PageObjectModel.LoginPageModel;
+import PageObjectModel.ReviewPageModel;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -21,6 +22,7 @@ import io.cucumber.java.en.When;
 public class steps {
   WebDriver driver;
   LoginPageModel loginStep;
+  ReviewPageModel reviewPageStep;
 
   @Before
   public void startBrowser() {
@@ -29,6 +31,7 @@ public class steps {
     handErr.setAcceptInsecureCerts(true);
     driver = new ChromeDriver(handErr);
     loginStep = new LoginPageModel(driver);
+    reviewPageStep = new ReviewPageModel(driver);
     driver.get("https://10.250.11.13:5002/review/Login");
   }
 
@@ -46,16 +49,19 @@ public class steps {
   public void checkValid() throws Throwable {
     String txt;
     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-    try {
-      wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("toast-body")));
-      txt = driver.findElement(By.className("toast-body")).getText();
-      System.out.println("hasil: " + txt);
-    } catch (Exception e) {
-      txt = driver.findElement(By.className("title")).getText();
-      assertEquals("Dashboard", txt);
-    }
+    wait.until(ExpectedConditions.or(ExpectedConditions.visibilityOfElementLocated(By.className("toast-body")),
+        ExpectedConditions.visibilityOfElementLocated(By.className(("title")))));
+    txt = driver.findElement(By.className("toast-body")).getText();
+    System.out.println("hasil: " + txt);
+
+    txt = driver.findElement(By.className("title")).getText();
+    assertEquals("Dashboard", txt);
   }
 
+  @Then("click burger icon")
+  public void clickBurgerIcon() {
+    reviewPageStep.clickMenuIcon();
+  }
   // @And("click menu 1")
   // public void clickMenu1() {
 

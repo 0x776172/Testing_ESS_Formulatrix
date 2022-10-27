@@ -4,7 +4,7 @@ Scenario: Positive case login page
   When enter "admin" and "123456"
   And click login button
   When check valid
-  # Then click burger icon
+  Then click burger icon
   #   And click menu 1
   #   And click menu 2
   #   And click menu 3
